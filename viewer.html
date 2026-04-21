@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bioinfo — 3D Structure Viewer</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    #header {
+      background: #16213e;
+      border-bottom: 2px solid #0f3460;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    #header h1 {
+      font-size: 1.1em;
+      color: #e94560;
+      white-space: nowrap;
+    }
+    #controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      flex: 1;
+    }
+    #pdb-input {
+      flex: 1;
+      min-width: 200px;
+      padding: 5px 8px;
+      border-radius: 4px;
+      border: 1px solid #0f3460;
+      background: #0f3460;
+      color: #eee;
+      font-size: 0.85em;
+    }
+    button {
+      padding: 5px 12px;
+      border-radius: 4px;
+      border: none;
+      background: #e94560;
+      color: white;
+      cursor: pointer;
+      font-size: 0.85em;
+    }
+    button:hover { background: #c73652; }
+    #style-select {
+      padding: 5px 8px;
+      border-radius: 4px;
+      border: 1px solid #0f3460;
+      background: #0f3460;
+      color: #eee;
+      font-size: 0.85em;
+    }
+    #viewer-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+    #viewer {
+      width: 100%;
+      height: 100%;
+    }
+    #status {
+      background: #16213e;
+      padding: 4px 20px;
+      font-size: 0.78em;
+      color: #888;
+      border-top: 1px solid #0f3460;
+      min-height: 22px;
+    }
+    #status.error { color: #e94560; }
+    #loading-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #e94560;
+      font-size: 1.3em;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+<div id="header">
+  <h1>🧬 3D Structure Viewer</h1>
+  <div id="controls">
+    <input id="pdb-input" type="text"
+      placeholder="PDB URL or PDB ID (e.g. 6XM4) …" />
+    <button onclick="loadFromInput()">Load</button>
+    <select id="style-select" onchange="applyStyle()">
+      <option value="cartoon">Cartoon</option>
+      <option value="stick">Stick</option>
+      <option value="sphere">Sphere</option>
+      <option value="line">Line</option>
+      <option value="cross">Cross</option>
+    </select>
+    <button onclick="toggleSurface()">Toggle Surface</button>
+    <button onclick="viewer && viewer.zoomTo() && viewer.render()">Reset View</button>
+  </div>
+</div>
+
+<div id="viewer-container">
+  <div id="viewer"></div>
+  <div id="loading-overlay">Loading structure…</div>
+</div>
+
+<div id="status">
+  Use ?pdb=&lt;URL&gt; or ?id=&lt;PDBID&gt; in the URL, or type above and click Load.
+</div>
+
+<!-- 3Dmol.js from CDN -->
+<script src="https://3Dmol.csb.pitt.edu/build/3Dmol-min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var viewer = null;
+  var surfaceVisible = false;
+  var surfaceObj = null;
+
+  function setStatus(msg, isError) {
+    var el = document.getElementById('status');
+    el.textContent = msg;
+    el.className = isError ? 'error' : '';
+  }
+
+  function setLoading(show) {
+    document.getElementById('loading-overlay').style.display = show ? '' : 'none';
+  }
+
+  function initViewer() {
+    var el = document.getElementById('viewer');
+    viewer = $3Dmol.createViewer(el, { backgroundColor: '0x1a1a2e' });
+  }
+
+  function applyStyle() {
+    if (!viewer) return;
+    var style = document.getElementById('style-select').value;
+    viewer.setStyle({}, {});
+    var styleObj = {};
+    styleObj[style] = { color: 'spectrum' };
+    viewer.setStyle({}, styleObj);
+    viewer.render();
+  }
+
+  function toggleSurface() {
+    if (!viewer) return;
+    if (surfaceVisible) {
+      if (surfaceObj !== null) {
+        viewer.removeSurface(surfaceObj);
+        surfaceObj = null;
+      }
+      surfaceVisible = false;
+    } else {
+      surfaceObj = viewer.addSurface(
+        $3Dmol.SurfaceType.VDW,
+        { opacity: 0.15, color: 'white' }
+      );
+      surfaceVisible = true;
+    }
+    viewer.render();
+  }
+
+  function displayModel(data, format, label) {
+    viewer.clear();
+    surfaceVisible = false;
+    surfaceObj = null;
+    viewer.addModel(data, format);
+    applyStyle();
+    viewer.zoomTo();
+    viewer.render();
+    setLoading(false);
+    setStatus('Loaded: ' + label);
+  }
+
+  function loadUrl(url) {
+    setLoading(true);
+    setStatus('Fetching ' + url + ' …');
+    fetch(url)
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status + ' — ' + r.statusText);
+        return r.text();
+      })
+      .then(function (data) {
+        displayModel(data, 'pdb', url);
+      })
+      .catch(function (err) {
+        setLoading(false);
+        setStatus('Error loading URL: ' + err.message, true);
+      });
+  }
+
+  function loadPdbId(id) {
+    setLoading(true);
+    setStatus('Fetching PDB entry ' + id.toUpperCase() + ' …');
+    $3Dmol.download('pdb:' + id, viewer, { format: 'pdb' }, function () {
+      applyStyle();
+      viewer.zoomTo();
+      viewer.render();
+      setLoading(false);
+      setStatus('Loaded PDB: ' + id.toUpperCase());
+    });
+  }
+
+  function loadFromInput() {
+    var val = document.getElementById('pdb-input').value.trim();
+    if (!val) return;
+    if (val.startsWith('http://') || val.startsWith('https://') || val.startsWith('/')) {
+      loadUrl(val);
+    } else if (/^[A-Za-z0-9]{4}$/.test(val)) {
+      loadPdbId(val);
+    } else {
+      setStatus('Please enter a valid URL or 4-character PDB ID.', true);
+    }
+  }
+
+  // Allow pressing Enter in the input box
+  document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('pdb-input').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') loadFromInput();
+    });
+  });
+
+  // Expose for button onclick
+  window.loadFromInput = loadFromInput;
+  window.applyStyle = applyStyle;
+  window.toggleSurface = toggleSurface;
+
+  // Auto-load from URL parameters
+  window.addEventListener('load', function () {
+    initViewer();
+
+    var params = new URLSearchParams(window.location.search);
+    var pdbUrl = params.get('pdb');
+    var pdbId = params.get('id');
+
+    if (pdbUrl) {
+      document.getElementById('pdb-input').value = pdbUrl;
+      loadUrl(pdbUrl);
+    } else if (pdbId) {
+      document.getElementById('pdb-input').value = pdbId;
+      loadPdbId(pdbId);
+    } else {
+      setLoading(false);
+      setStatus('Ready — provide ?pdb=<URL> or ?id=<PDBID> in the URL, or type above.');
+    }
+  });
+})();
+</script>
+</body>
+</html>
