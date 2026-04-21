@@ -1,0 +1,12 @@
+gene	epitope	aa_start	aa_end	source	notes
+HA	Sa	128	175	Influenza B HA antigenic sites (Smith et al.)	Major antigenic site Sa
+HA	Sb	183	206	Influenza B HA antigenic sites	Major antigenic site Sb
+HA	Ca	169	179	Influenza B HA antigenic sites	Major antigenic site Ca
+HA	Cb	74	83	Influenza B HA antigenic sites	Major antigenic site Cb
+HA	Cc	260	268	Influenza B HA antigenic sites	Major antigenic site Cc
+HA	RBS_1	136	138	Receptor binding site (Weis et al.)	Receptor binding site loop 1
+HA	RBS_2	183	194	Receptor binding site	Receptor binding site loop 2
+HA	RBS_3	220	228	Receptor binding site	Receptor binding site loop 3
+HA	fusion_peptide	1	23	HA2 fusion peptide	N-terminal HA2 fusion peptide
+HA	stalk_N	1	60	HA2 stalk domain	HA2 stalk N-terminal
+HA	stalk_C	291	350	HA2 stalk domain	HA2 stalk C-terminal

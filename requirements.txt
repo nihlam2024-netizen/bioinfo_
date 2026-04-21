@@ -1,0 +1,6 @@
+# No external dependencies required.
+# The pipeline uses Python standard library only: json, pathlib, csv,
+# argparse, importlib, colorsys, hashlib, urllib.parse, subprocess.
+#
+# Optional: install pytest for running the test suite
+# pytest>=7.0
