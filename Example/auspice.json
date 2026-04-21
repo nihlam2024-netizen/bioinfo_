@@ -1,0 +1,172 @@
+{
+  "meta": {
+    "title": "Influenza B/Victoria HA Phylogeny (UAE) — Example",
+    "updated": "2024-01-01",
+    "colorings": [
+      {"key": "country", "title": "Country", "type": "categorical"},
+      {"key": "region",  "title": "Region",  "type": "categorical"},
+      {"key": "clade",   "title": "Clade",   "type": "categorical"},
+      {"key": "division","title": "Division","type": "categorical"}
+    ],
+    "filters": ["region", "country", "division", "clade"],
+    "panels": ["tree", "map", "entropy"],
+    "genome_annotations": {
+      "nuc": {
+        "seqid": "nuc",
+        "type": "source",
+        "start": 1,
+        "end": 1710,
+        "strand": "+"
+      },
+      "HA": {
+        "seqid": "nuc",
+        "type": "CDS",
+        "start": 34,
+        "end": 1710,
+        "strand": "+"
+      }
+    }
+  },
+  "tree": {
+    "name": "NODE_ROOT",
+    "node_attrs": {
+      "region":   {"value": "Middle East"},
+      "country":  {"value": "UAE",
+                   "confidence": {"UAE": 1.0}},
+      "division": {"value": "Abu Dhabi"},
+      "clade":    {"value": "V1A.3"},
+      "num_date": {"value": 2023.0}
+    },
+    "branch_attrs": {"mutations": {}},
+    "children": [
+      {
+        "name": "NODE_INTERNAL_1",
+        "node_attrs": {
+          "region":   {"value": "Africa"},
+          "country":  {"value": "South Africa",
+                       "confidence": {"South Africa": 0.88}},
+          "division": {"value": "Gauteng"},
+          "clade":    {"value": "V1A.3"},
+          "num_date": {"value": 2022.5}
+        },
+        "branch_attrs": {
+          "mutations": {
+            "nuc": ["A123G", "T456C"],
+            "aa": {"HA": ["S145N"]}
+          }
+        },
+        "children": [
+          {
+            "name": "B3-B67-CONS-07102022_HA",
+            "node_attrs": {
+              "region":   {"value": "Africa"},
+              "country":  {"value": "South Africa",
+                           "confidence": {"South Africa": 0.96, "UAE": 0.02}},
+              "division": {"value": "Gauteng"},
+              "clade":    {"value": "V1A.3"},
+              "num_date": {"value": 2022.77},
+              "date":     {"value": "2022-10-07"}
+            },
+            "branch_attrs": {
+              "mutations": {
+                "nuc": ["G789A"],
+                "aa": {"HA": ["K203R"]}
+              }
+            }
+          },
+          {
+            "name": "INF-UAE-001-ABD-01032023_HA",
+            "node_attrs": {
+              "region":   {"value": "Middle East"},
+              "country":  {"value": "UAE",
+                           "confidence": {"UAE": 0.99}},
+              "division": {"value": "Abu Dhabi"},
+              "clade":    {"value": "V1A.3"},
+              "num_date": {"value": 2023.17},
+              "date":     {"value": "2023-03-01"}
+            },
+            "branch_attrs": {
+              "mutations": {
+                "nuc": ["C321T", "A654G"],
+                "aa": {"HA": ["I48T", "N116S"]}
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "NODE_INTERNAL_2",
+        "node_attrs": {
+          "region":   {"value": "North America"},
+          "country":  {"value": "United States",
+                       "confidence": {"United States": 0.85, "UAE": 0.1}},
+          "division": {"value": ""},
+          "clade":    {"value": "V1A.3a2"},
+          "num_date": {"value": 2023.3}
+        },
+        "branch_attrs": {
+          "mutations": {
+            "nuc": ["T987G"],
+            "aa": {"HA": ["D197N"]}
+          }
+        },
+        "children": [
+          {
+            "name": "B38-B53-02SV230010250-INF-09102023-SAJ_HA",
+            "node_attrs": {
+              "region":   {"value": "Middle East"},
+              "country":  {"value": "UAE",
+                           "confidence": {"UAE": 1.0}},
+              "division": {"value": "Sharjah"},
+              "clade":    {"value": "V1A.3a2"},
+              "num_date": {"value": 2023.77},
+              "date":     {"value": "2023-10-09"}
+            },
+            "branch_attrs": {
+              "mutations": {
+                "nuc": ["A111C", "G222T", "T333A"],
+                "aa": {"HA": ["E163K", "H273Q"]}
+              }
+            }
+          },
+          {
+            "name": "INF-USA-CA-2023-456_HA",
+            "node_attrs": {
+              "region":   {"value": "North America"},
+              "country":  {"value": "United States",
+                           "confidence": {"United States": 0.97}},
+              "division": {"value": "California"},
+              "clade":    {"value": "V1A.3a2"},
+              "num_date": {"value": 2023.5},
+              "date":     {"value": "2023-07-01"}
+            },
+            "branch_attrs": {
+              "mutations": {
+                "nuc": ["C444G"],
+                "aa": {}
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "INF-B30-20032023-B73-15SV230002416-FLUB-VICTORIA_HA",
+        "node_attrs": {
+          "region":   {"value": "Middle East"},
+          "country":  {"value": "UAE",
+                       "confidence": {"UAE": 1.0}},
+          "division": {"value": "Dubai"},
+          "clade":    {"value": "V1A.3"},
+          "num_date": {"value": 2023.22},
+          "date":     {"value": "2023-03-20"}
+        },
+        "branch_attrs": {
+          "mutations": {
+            "nuc": ["G555A", "A666T"],
+            "aa": {"HA": ["P143S"]}
+          }
+        }
+      }
+    ]
+  }
+}

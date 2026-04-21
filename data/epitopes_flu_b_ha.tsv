@@ -1,0 +1,7 @@
+name	start	end	color	description
+site_I	120	140	#e41a1c	Antigenic site I
+site_II	155	165	#377eb8	Antigenic site II
+site_III	195	210	#4daf4a	Antigenic site III
+site_IV	235	250	#984ea3	Antigenic site IV
+site_V	270	285	#ff7f00	Antigenic site V
+receptor_binding	190	230	#a65628	Receptor binding domain (HA1)
